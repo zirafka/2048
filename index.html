@@ -3,29 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>2048</title>
+<title>2048 – nekonečné undo</title>
 <style>
   *{box-sizing:border-box;margin:0;padding:0;}
-  body{background:#1a0803;display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:2rem 1rem;font-family:'Segoe UI',system-ui,sans-serif;-webkit-user-select:none;user-select:none;}
-  h1{font-size:2.5rem;font-weight:700;color:#ff9840;letter-spacing:-0.02em;}
-  .subtitle{font-size:0.85rem;color:#c06030;margin-top:2px;}
+  body{background:#ddd;display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:2rem 1rem;font-family:'Segoe UI',system-ui,sans-serif;-webkit-user-select:none;user-select:none;}
+  h1{font-size:2.5rem;font-weight:700;color:#111;letter-spacing:-0.02em;}
+  .subtitle{font-size:0.85rem;color:#666;margin-top:2px;}
   header{display:flex;align-items:flex-end;justify-content:space-between;width:100%;max-width:420px;margin-bottom:1rem;}
   .scores{display:flex;gap:10px;}
-  .score-box{background:#3c0f05;border:1px solid #6a2010;border-radius:6px;padding:8px 16px;text-align:center;min-width:80px;}
-  .score-box .label{font-size:10px;color:#c06030;text-transform:uppercase;letter-spacing:0.08em;}
-  .score-box .val{font-size:20px;font-weight:700;color:#ffb870;}
+  .score-box{background:#222;border-radius:6px;padding:8px 16px;text-align:center;min-width:80px;}
+  .score-box .label{font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:0.08em;}
+  .score-box .val{font-size:20px;font-weight:700;color:#fff;}
   .controls{display:flex;gap:8px;justify-content:flex-start;width:100%;max-width:420px;margin-bottom:0.8rem;}
-  button{background:#5c1a00;color:#ffd0a0;border:1px solid #8a2800;border-radius:6px;padding:9px 22px;font-size:14px;font-family:inherit;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background 0.15s;}
-  button:hover:not(:disabled){background:#7a2800;}
-  button:disabled{background:#2a0800;color:#6a3020;border-color:#3a1408;cursor:default;}
-  .board{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:12px;background:#2d0f05;border-radius:10px;width:420px;max-width:100%;}
-  .tile{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:5px;font-weight:700;transition:background-color 0.07s;}
+  button{background:#222;color:#fff;border:none;border-radius:6px;padding:9px 22px;font-size:14px;font-family:inherit;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background 0.15s;}
+  button:hover:not(:disabled){background:#444;}
+  button:disabled{background:#bbb;color:#888;cursor:default;}
+  .board{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:12px;background:#333;border-radius:10px;width:420px;max-width:100%;}
+  .tile{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:5px;font-weight:700;border:1px solid #aaa;}
   .tile.new{animation:pop .14s ease-out;}
   @keyframes pop{from{transform:scale(0.4);opacity:0;}to{transform:scale(1);opacity:1;}}
-  #congrats{display:none;width:100%;max-width:420px;margin-top:0.5rem;padding:18px 24px;border-radius:10px;border:1px solid #cc2200;background:#3c0500;text-align:center;}
-  #congrats h2{font-size:1.5rem;color:#ffb870;margin-bottom:6px;}
-  #congrats p{font-size:0.9rem;color:#ff9840;line-height:1.6;}
-  .hint{font-size:12px;color:#6a2a10;text-align:center;margin-top:0.8rem;}
+  #congrats{display:none;width:100%;max-width:420px;margin-top:0.5rem;padding:18px 24px;border-radius:10px;border:2px solid #000;background:#fff;text-align:center;}
+  #congrats h2{font-size:1.5rem;color:#000;margin-bottom:6px;}
+  #congrats p{font-size:0.9rem;color:#444;line-height:1.6;}
+  .hint{font-size:12px;color:#888;text-align:center;margin-top:0.8rem;}
   @media(max-width:460px){.board{width:calc(100vw - 2rem);}h1{font-size:2rem;}}
 </style>
 </head>
@@ -38,7 +38,7 @@
   </div>
   <div class="scores">
     <div class="score-box"><div class="label">Skóre</div><div class="val" id="score">0</div></div>
-    <div class="score-box"><div class="label">Nejlepší</div><div class="val" id="best">0</div></div>
+
   </div>
 </header>
 
@@ -61,37 +61,51 @@
 <script>
 const WIN_SET = new Set([2,4,8,16,32,64,128,256,512,1024,2048,4096,8192,16384,32768,65536]);
 
-/* Paleta optimalizovaná pro červený filtr:
-   kontrast zajišťuje pouze jas červeného kanálu –
-   žádné modré ani zelené složky */
-const COLORS = {
-  0:     {bg:'rgba(255,160,80,0.10)', fg:'transparent'},
-  2:     {bg:'#fff8f0', fg:'#5c1a00'},
-  4:     {bg:'#ffe8d0', fg:'#5c1a00'},
-  8:     {bg:'#ffd0a0', fg:'#4a1200'},
-  16:    {bg:'#ffb870', fg:'#3a0e00'},
-  32:    {bg:'#ff9840', fg:'#2a0800'},
-  64:    {bg:'#ff7418', fg:'#fff8f0'},
-  128:   {bg:'#f05000', fg:'#fff8f0'},
-  256:   {bg:'#d83800', fg:'#fff8f0'},
-  512:   {bg:'#be2800', fg:'#fff0e0'},
-  1024:  {bg:'#a01c00', fg:'#ffe4c0'},
-  2048:  {bg:'#841200', fg:'#ffd8a8'},
-  4096:  {bg:'#680c00', fg:'#ffc880'},
-  8192:  {bg:'#500800', fg:'#ffb860'},
-  16384: {bg:'#3c0500', fg:'#ffa840'},
-  32768: {bg:'#280300', fg:'#ff9820'},
-  65536: {bg:'#180200', fg:'#ffcc00'},
+/* d = počet směrů šrafování (0 = žádné), sp = rozestup čar v px
+   dark = true → bílý text s černým stínem
+   dark = false → černý text s bílým stínem                        */
+const P = {
+  0:    {d:0, sp:0,  dark:false},
+  2:    {d:0, sp:0,  dark:false},
+  4:    {d:1, sp:28, dark:false},
+  8:    {d:1, sp:14, dark:false},
+  16:   {d:1, sp:10, dark:false},
+  32:   {d:2, sp:16, dark:false},
+  64:   {d:2, sp:11, dark:false},
+  128:  {d:2, sp:8,  dark:false},
+  256:  {d:2, sp:5,  dark:false},
+  512:  {d:3, sp:8,  dark:false},
+  1024: {d:3, sp:6,  dark:false},
+  2048: {d:3, sp:4,  dark:true},
+  4096: {d:3, sp:3,  dark:true},
+  8192: {d:4, sp:6,  dark:true},
+  16384:{d:4, sp:4,  dark:true},
+  32768:{d:4, sp:3,  dark:true},
+  65536:{d:4, sp:2,  dark:true},
 };
-function gc(v) { return COLORS[v] || {bg:'#100100', fg:'#ffaa00'}; }
+
+const WHITE_SHADOW = '0 0 3px #fff, 0 0 5px #fff, 1px 1px 0 #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff';
+const BLACK_SHADOW = '0 0 3px #000, 0 0 5px #000';
+
+function mkBg(d, sp) {
+  if (d === 0) return '#fff';
+  const L = a => `repeating-linear-gradient(${a}deg,#000 0,#000 1px,transparent 1px,transparent ${sp}px)`;
+  const parts = [];
+  if (d >= 1) parts.push(L(45));
+  if (d >= 2) parts.push(L(-45));
+  if (d >= 3) parts.push(L(0));
+  if (d >= 4) parts.push(L(90));
+  parts.push('#fff');
+  return parts.join(',');
+}
+
 function fs(v) { return v >= 10000 ? '1.05rem' : v >= 1000 ? '1.3rem' : v >= 100 ? '1.7rem' : '2.1rem'; }
 
-let grid = Array(16).fill(0), score = 0, best = 0, history = [], newSet = new Set();
+let grid = Array(16).fill(0), score = 0, history = [], newSet = new Set();
 
 function isWon() {
   if (grid.some(v => v === 0)) return false;
-  const s = new Set(grid);
-  if (s.size !== 16) return false;
+  const s = new Set(grid); if (s.size !== 16) return false;
   for (const v of s) if (!WIN_SET.has(v)) return false;
   return true;
 }
@@ -105,8 +119,7 @@ function rand() {
   const e = grid.reduce((a,v,i) => v===0 ? [...a,i] : a, []);
   if (!e.length) return;
   const i = e[Math.floor(Math.random() * e.length)];
-  grid[i] = Math.random() < 0.9 ? 2 : 4;
-  newSet.add(i);
+  grid[i] = Math.random() < 0.9 ? 2 : 4; newSet.add(i);
 }
 function rot(g) {
   const n = Array(16);
@@ -125,41 +138,34 @@ function slideL(g) {
   return {grid:n, gained, moved};
 }
 function doMove(dir) {
-  if (isWon()) return;
-  if (!canMove()) return;
+  if (isWon() || !canMove()) return;
   let g = [...grid];
   const rc = {left:0, up:3, right:2, down:1}[dir];
   for (let i = 0; i < rc; i++) g = rot(g);
-  const res = slideL(g);
-  if (!res.moved) return;
+  const res = slideL(g); if (!res.moved) return;
   let ng = res.grid;
   for (let i = 0; i < (4-rc)%4; i++) ng = rot(ng);
   history.push({grid:[...grid], score});
   grid = ng; score += res.gained;
-  if (score > best) best = score;
-  newSet.clear();
-  if (!isWon()) rand();
-  render();
+  newSet.clear(); if (!isWon()) rand(); render();
 }
 function undo() {
   if (!history.length) return;
-  const p = history.pop();
-  grid = p.grid; score = p.score; newSet.clear();
-  render();
+  const p = history.pop(); grid = p.grid; score = p.score; newSet.clear(); render();
 }
 function render() {
   document.getElementById('score').textContent = score.toLocaleString('cs');
-  document.getElementById('best').textContent = best.toLocaleString('cs');
-  const board = document.getElementById('board');
-  board.innerHTML = '';
+  const board = document.getElementById('board'); board.innerHTML = '';
   for (let i = 0; i < 16; i++) {
-    const v = grid[i];
-    const {bg, fg} = gc(v);
-    const d = document.createElement('div');
-    d.className = 'tile' + (newSet.has(i) ? ' new' : '');
-    d.style.background = bg; d.style.color = fg; d.style.fontSize = fs(v);
-    if (v) d.textContent = v;
-    board.appendChild(d);
+    const v = grid[i], p = P[v] || {d:4, sp:2, dark:true};
+    const el = document.createElement('div');
+    el.className = 'tile' + (newSet.has(i) ? ' new' : '');
+    el.style.background = v ? mkBg(p.d, p.sp) : '#ccc';
+    el.style.color = p.dark ? '#fff' : '#000';
+    el.style.textShadow = p.dark ? BLACK_SHADOW : WHITE_SHADOW;
+    el.style.fontSize = fs(v);
+    if (v) el.textContent = v;
+    board.appendChild(el);
   }
   document.getElementById('congrats').style.display = isWon() ? 'block' : 'none';
   const ub = document.getElementById('undo-btn');
