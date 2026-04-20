@@ -13,7 +13,8 @@
   .score-box{background:#222;border-radius:6px;padding:8px 16px;text-align:center;min-width:80px;}
   .score-box .label{font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:0.08em;}
   .score-box .val{font-size:20px;font-weight:700;color:#fff;}
-  .controls{display:flex;gap:8px;justify-content:flex-start;width:100%;max-width:420px;margin-bottom:0.8rem;flex-wrap:wrap;}
+  .controls{display:flex;gap:8px;justify-content:space-between;width:100%;max-width:420px;margin-bottom:0.8rem;}
+  .controls-right{display:flex;gap:8px;}
   button{background:#222;color:#fff;border:none;border-radius:6px;padding:9px 18px;font-size:14px;font-family:inherit;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background 0.15s;}
   button:hover:not(:disabled){background:#444;}
   button:disabled{background:#bbb;color:#888;cursor:default;}
@@ -44,14 +45,16 @@
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 00-9-9 9 9 0 00-6 2.3L3 13"/></svg>
     Zpět <span id="undo-count"></span>
   </button>
-  <button onclick="saveGame()">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-    Uložit
-  </button>
-  <button onclick="loadGame()">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-    Načíst
-  </button>
+  <div class="controls-right">
+    <button onclick="saveGame()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+      Uložit
+    </button>
+    <button onclick="loadGame()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Načíst
+    </button>
+  </div>
 </div>
 
 <div id="status"></div>
