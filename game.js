@@ -42,11 +42,50 @@ function renderGrid(grid) {
   });
 }
 
+function mergeRow(row) {
+  const tiles = row.filter(v => v !== 0);
+  const result = [];
+  let i = 0;
+  while (i < tiles.length) {
+    if (i + 1 < tiles.length && tiles[i] === tiles[i + 1]) {
+      result.push(tiles[i] * 2);
+      i += 2;
+    } else {
+      result.push(tiles[i]);
+      i++;
+    }
+  }
+  while (result.length < 4) result.push(0);
+  return result;
+}
+
+function moveLeft(grid) {
+  const before = grid.slice();
+  for (let r = 0; r < 4; r++) {
+    const start = r * 4;
+    const newRow = mergeRow(grid.slice(start, start + 4));
+    for (let c = 0; c < 4; c++) {
+      grid[start + c] = newRow[c];
+    }
+  }
+  const changed = grid.some((v, i) => v !== before[i]);
+  console.log('moveLeft', { before, after: grid.slice(), changed });
+  return changed;
+}
+
 function initGame() {
   gameState.grid = createEmptyGrid();
   spawnRandomTile(gameState.grid);
   spawnRandomTile(gameState.grid);
   renderGrid(gameState.grid);
 }
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowLeft') {
+    e.preventDefault();
+    moveLeft(gameState.grid);
+    renderGrid(gameState.grid);
+  }
+});
 
 initGame();
