@@ -37,12 +37,38 @@ Neimplementuj nic, co SPEC.md neobsahuje, bez předchozího souhlasu.
 
 ## Workflow pro každý úkol
 
-1. Přečti si relevantní část SPEC.md.
-2. Pokud je v SPEC.md nejasnost, zeptej se **před začátkem práce**.
-3. Popiš krátce plán – co uděláš a jaké soubory změníš.
-4. Implementuj.
-5. Oznam, co jsi udělal/a, a čekej na mou kontrolu v prohlížeči.
-6. Po schválení navrhni commit message a commitni.
+Podle povahy úkolu zvol jeden ze dvou režimů:
+
+**Lehký režim** (výchozí, pro většinu úkolů):
+1. Popiš stručně (1-3 řádky) plán – co uděláš a proč. Žádné dlouhé plánování.
+2. Rovnou implementuj.
+3. Shrň, co jsi udělal, a čekej na mou kontrolu v prohlížeči.
+4. Po schválení navrhni commit message a commitni.
+
+**Těžký režim** (pro rizikové nebo architektonické úkoly):
+Použij, když jde o: víc souborů naráz, refaktoring, breaking change signatur, změnu datového modelu, neobvyklou bibliotéku, bezpečnostně citlivou věc.
+1. Napiš podrobný plán včetně variant, trade-offs a zdůvodnění.
+2. Čekej na schválení plánu.
+3. Implementuj.
+4. Shrň a čekej na kontrolu.
+5. Commitni po schválení.
+
+**Rozhodnutí, který režim použít, je na tobě.** Pokud si nejsi jistý, zvol těžký. Pokud mi jednou za čas projde něco, co jsi měl plánovat podrobněji, řeknu ti to a pro příště se přizpůsobíš.
+
+---
+
+## Komunikace se mnou
+
+- Odpovídej stručně. Shrnutí po implementaci: 3-5 odrážek. Žádné dlouhé preambule.
+- Commit messages navrhuj sám, neptej se mě. Jen je ukaž před commitnutím.
+- Když narazíš na rozhodnutí, které není v SPEC.md (barvy, pojmenování, drobné UX), vyber podle zdravého rozumu a zmiň to v shrnutí – nezdržuj se dotazem.
+- Naopak u věcí, které SPEC mění nebo významně interpretují, vždy ptej se předem.
+
+---
+
+## Meta
+
+- Já (uživatelka) mám paralelně běžící konverzaci s Claude na claude.ai, která zná celý projekt. Občas jí použiju na architektonické otázky nebo review kódu. Nech mě to řídit, ty se soustřeď na implementaci v repu.
 
 ---
 
