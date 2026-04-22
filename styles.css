@@ -28,6 +28,13 @@ body {
   align-items: center;
 }
 
+#cloud-btns {
+  display: flex;
+  gap: 8px;
+  width: min(440px, 90vw);
+  justify-content: flex-end;
+}
+
 #undo-btn,
 #new-game-btn {
   background-color: #6d6560;

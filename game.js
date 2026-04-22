@@ -201,6 +201,74 @@ board.addEventListener('touchend', (e) => {
   handleMove(direction);
 }, { passive: false });
 
+const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${CONFIG.binId}`;
+const JSONBIN_HEADERS = {
+  'Content-Type': 'application/json',
+  'X-Master-Key': CONFIG.apiKey,
+};
+
+function withBtnFeedback(btn, label, asyncFn) {
+  const original = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = label;
+  asyncFn()
+    .then(() => {
+      btn.textContent = btn === saveBtn ? 'Uloženo ✓' : 'Načteno ✓';
+    })
+    .catch(() => {
+      btn.textContent = 'Chyba ✗';
+    })
+    .finally(() => {
+      setTimeout(() => {
+        btn.textContent = original;
+        btn.disabled = false;
+      }, 3000);
+    });
+}
+
+async function saveGame() {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10000);
+  try {
+    const res = await fetch(JSONBIN_URL, {
+      method: 'PUT',
+      headers: JSONBIN_HEADERS,
+      body: JSON.stringify({ grid: gameState.grid, score: gameState.score, history: gameState.history }),
+      signal: controller.signal,
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+async function loadGame() {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10000);
+  try {
+    const res = await fetch(`${JSONBIN_URL}/latest`, {
+      headers: JSONBIN_HEADERS,
+      signal: controller.signal,
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const { record } = await res.json();
+    gameState.grid = record.grid;
+    gameState.score = record.score;
+    gameState.history = record.history;
+    renderGrid(gameState.grid);
+    renderScore(gameState.score);
+    renderUndoBtn();
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+const saveBtn = document.getElementById('save-btn');
+const loadBtn = document.getElementById('load-btn');
+
+saveBtn.addEventListener('click', () => withBtnFeedback(saveBtn, 'Ukládám…', saveGame));
+loadBtn.addEventListener('click', () => withBtnFeedback(loadBtn, 'Načítám…', loadGame));
+
 document.getElementById('undo-btn').addEventListener('click', undo);
 
 document.getElementById('win-close-btn').addEventListener('click', () => {
