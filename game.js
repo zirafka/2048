@@ -97,6 +97,18 @@ function move(grid, direction) {
   return changed;
 }
 
+const WIN_VALUES = new Set([2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536]);
+
+function checkWin(grid) {
+  const present = new Set(grid.filter(v => v !== 0));
+  return WIN_VALUES.size === present.size && [...WIN_VALUES].every(v => present.has(v));
+}
+
+function showWinOverlay() {
+  document.getElementById('win-overlay').hidden = false;
+  document.getElementById('new-game-btn').hidden = false;
+}
+
 function initGame() {
   gameState.grid = createEmptyGrid();
   gameState.score = 0;
@@ -104,6 +116,8 @@ function initGame() {
   spawnRandomTile(gameState.grid);
   renderGrid(gameState.grid);
   renderScore(gameState.score);
+  document.getElementById('win-overlay').hidden = true;
+  document.getElementById('new-game-btn').hidden = true;
 }
 
 const KEY_MAP = {
@@ -124,7 +138,16 @@ document.addEventListener('keydown', (e) => {
     spawnRandomTile(gameState.grid);
     renderGrid(gameState.grid);
     renderScore(gameState.score);
+    if (checkWin(gameState.grid)) showWinOverlay();
   }
+});
+
+document.getElementById('win-close-btn').addEventListener('click', () => {
+  document.getElementById('win-overlay').hidden = true;
+});
+
+document.getElementById('new-game-btn').addEventListener('click', () => {
+  initGame();
 });
 
 initGame();

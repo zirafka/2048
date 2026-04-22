@@ -12,6 +12,7 @@
       <span id="score-label">Skóre</span>
       <span id="score">0</span>
     </div>
+    <button id="new-game-btn" hidden>Nová hra</button>
   </div>
   <div id="board">
     <div class="cell"></div>
@@ -30,6 +31,13 @@
     <div class="cell"></div>
     <div class="cell"></div>
     <div class="cell"></div>
+  </div>
+  <div id="win-overlay" hidden>
+    <div id="win-box">
+      <p id="win-title">Výhra!</p>
+      <p id="win-message">Sestavila jsi všech 16 mocnin dvou.</p>
+      <button id="win-close-btn">Zavřít</button>
+    </div>
   </div>
   <script src="game.js"></script>
 </body>
