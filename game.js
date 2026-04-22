@@ -38,11 +38,11 @@ function renderScore(score) {
 function renderGrid(grid) {
   const cells = document.querySelectorAll('.cell');
   cells.forEach((cell, i) => {
-    cell.classList.remove('tile', 'font-lg', 'font-md', 'font-sm', 'font-xs');
+    cell.className = 'cell';
     cell.textContent = '';
 
     if (grid[i] !== 0) {
-      cell.classList.add('tile', fontClass(grid[i]));
+      cell.classList.add('tile', `tile-${grid[i]}`, fontClass(grid[i]));
       cell.textContent = grid[i];
     }
   });

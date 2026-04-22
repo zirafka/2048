@@ -98,12 +98,40 @@ body {
   align-items: center;
   font-weight: 700;
   color: #000000;
+  text-shadow:
+    -2px -2px 0 #fff,  2px -2px 0 #fff,
+    -2px  2px 0 #fff,  2px  2px 0 #fff,
+    -2px     0 0 #fff,  2px     0 0 #fff,
+        0 -2px 0 #fff,     0  2px 0 #fff;
 }
 
 .cell.tile.font-lg  { font-size: 2.5rem; }
 .cell.tile.font-md  { font-size: 1.8rem; }
 .cell.tile.font-sm  { font-size: 1.4rem; }
 .cell.tile.font-xs  { font-size: 1.1rem; }
+
+/* Group 1 – single diagonal (45°) */
+.tile-4   { background-image: repeating-linear-gradient(45deg, #000 0, #000 1px, transparent 1px, transparent 20px); }
+.tile-8   { background-image: repeating-linear-gradient(45deg, #000 0, #000 1px, transparent 1px, transparent 12px); }
+.tile-16  { background-image: repeating-linear-gradient(45deg, #000 0, #000 1px, transparent 1px, transparent  7px); }
+
+/* Group 2 – cross (45° + 135°) */
+.tile-32  { background-image: repeating-linear-gradient( 45deg, #000 0, #000 1px, transparent 1px, transparent 20px), repeating-linear-gradient(135deg, #000 0, #000 1px, transparent 1px, transparent 20px); }
+.tile-64  { background-image: repeating-linear-gradient( 45deg, #000 0, #000 1px, transparent 1px, transparent 12px), repeating-linear-gradient(135deg, #000 0, #000 1px, transparent 1px, transparent 12px); }
+.tile-128 { background-image: repeating-linear-gradient( 45deg, #000 0, #000 1px, transparent 1px, transparent  7px), repeating-linear-gradient(135deg, #000 0, #000 1px, transparent 1px, transparent  7px); }
+.tile-256 { background-image: repeating-linear-gradient( 45deg, #000 0, #000 1px, transparent 1px, transparent  5px), repeating-linear-gradient(135deg, #000 0, #000 1px, transparent 1px, transparent  5px); }
+
+/* Group 3 – triple (45° + 135° + 90°) */
+.tile-512  { background-image: repeating-linear-gradient( 45deg, #000 0, #000 1px, transparent 1px, transparent 20px), repeating-linear-gradient(135deg, #000 0, #000 1px, transparent 1px, transparent 20px), repeating-linear-gradient( 90deg, #000 0, #000 1px, transparent 1px, transparent 20px); }
+.tile-1024 { background-image: repeating-linear-gradient( 45deg, #000 0, #000 1px, transparent 1px, transparent 12px), repeating-linear-gradient(135deg, #000 0, #000 1px, transparent 1px, transparent 12px), repeating-linear-gradient( 90deg, #000 0, #000 1px, transparent 1px, transparent 12px); }
+.tile-2048 { background-image: repeating-linear-gradient( 45deg, #000 0, #000 1px, transparent 1px, transparent  7px), repeating-linear-gradient(135deg, #000 0, #000 1px, transparent 1px, transparent  7px), repeating-linear-gradient( 90deg, #000 0, #000 1px, transparent 1px, transparent  7px); }
+.tile-4096 { background-image: repeating-linear-gradient( 45deg, #000 0, #000 1px, transparent 1px, transparent  5px), repeating-linear-gradient(135deg, #000 0, #000 1px, transparent 1px, transparent  5px), repeating-linear-gradient( 90deg, #000 0, #000 1px, transparent 1px, transparent  5px); }
+
+/* Group 4 – quadruple (45° + 135° + 90° + 0°) */
+.tile-8192  { background-image: repeating-linear-gradient( 45deg, #000 0, #000 1px, transparent 1px, transparent 20px), repeating-linear-gradient(135deg, #000 0, #000 1px, transparent 1px, transparent 20px), repeating-linear-gradient( 90deg, #000 0, #000 1px, transparent 1px, transparent 20px), repeating-linear-gradient(  0deg, #000 0, #000 1px, transparent 1px, transparent 20px); }
+.tile-16384 { background-image: repeating-linear-gradient( 45deg, #000 0, #000 1px, transparent 1px, transparent 12px), repeating-linear-gradient(135deg, #000 0, #000 1px, transparent 1px, transparent 12px), repeating-linear-gradient( 90deg, #000 0, #000 1px, transparent 1px, transparent 12px), repeating-linear-gradient(  0deg, #000 0, #000 1px, transparent 1px, transparent 12px); }
+.tile-32768 { background-image: repeating-linear-gradient( 45deg, #000 0, #000 1px, transparent 1px, transparent  7px), repeating-linear-gradient(135deg, #000 0, #000 1px, transparent 1px, transparent  7px), repeating-linear-gradient( 90deg, #000 0, #000 1px, transparent 1px, transparent  7px), repeating-linear-gradient(  0deg, #000 0, #000 1px, transparent 1px, transparent  7px); }
+.tile-65536 { background-image: repeating-linear-gradient( 45deg, #000 0, #000 1px, transparent 1px, transparent  5px), repeating-linear-gradient(135deg, #000 0, #000 1px, transparent 1px, transparent  5px), repeating-linear-gradient( 90deg, #000 0, #000 1px, transparent 1px, transparent  5px), repeating-linear-gradient(  0deg, #000 0, #000 1px, transparent 1px, transparent  5px); }
 
 #win-overlay {
   position: fixed;
