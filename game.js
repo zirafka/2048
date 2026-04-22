@@ -150,15 +150,7 @@ const KEY_MAP = {
   s: 'down', S: 'down',
 };
 
-document.addEventListener('keydown', (e) => {
-  if (e.ctrlKey && e.key === 'z') {
-    e.preventDefault();
-    undo();
-    return;
-  }
-  const direction = KEY_MAP[e.key];
-  if (!direction) return;
-  e.preventDefault();
+function handleMove(direction) {
   gameState.history.push({ grid: [...gameState.grid], score: gameState.score });
   const changed = move(gameState.grid, direction);
   if (changed) {
@@ -170,7 +162,44 @@ document.addEventListener('keydown', (e) => {
   } else {
     gameState.history.pop();
   }
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.ctrlKey && e.key === 'z') {
+    e.preventDefault();
+    undo();
+    return;
+  }
+  const direction = KEY_MAP[e.key];
+  if (!direction) return;
+  e.preventDefault();
+  handleMove(direction);
 });
+
+const SWIPE_THRESHOLD = 30;
+let touchStartX = 0;
+let touchStartY = 0;
+
+const board = document.getElementById('board');
+
+board.addEventListener('touchstart', (e) => {
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+}, { passive: false });
+
+board.addEventListener('touchmove', (e) => {
+  e.preventDefault();
+}, { passive: false });
+
+board.addEventListener('touchend', (e) => {
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  const dy = e.changedTouches[0].clientY - touchStartY;
+  if (Math.abs(dx) < SWIPE_THRESHOLD && Math.abs(dy) < SWIPE_THRESHOLD) return;
+  const direction = Math.abs(dx) >= Math.abs(dy)
+    ? (dx > 0 ? 'right' : 'left')
+    : (dy > 0 ? 'down' : 'up');
+  handleMove(direction);
+}, { passive: false });
 
 document.getElementById('undo-btn').addEventListener('click', undo);
 

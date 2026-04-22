@@ -82,6 +82,7 @@ body {
   border-radius: 8px;
   padding: 10px;
   width: min(440px, 90vw);
+  touch-action: none;
 }
 
 .cell {
