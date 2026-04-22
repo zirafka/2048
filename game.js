@@ -5,6 +5,7 @@ const GRID_SIZE = 16;
 let gameState = {
   grid: [],
   score: 0,
+  history: [],
 };
 
 function createEmptyGrid() {
@@ -109,13 +110,33 @@ function showWinOverlay() {
   document.getElementById('new-game-btn').hidden = false;
 }
 
+function renderUndoBtn() {
+  const btn = document.getElementById('undo-btn');
+  const count = gameState.history.length;
+  btn.textContent = `Zpět (${count})`;
+  btn.disabled = count === 0;
+}
+
+function undo() {
+  if (gameState.history.length === 0) return;
+  const snapshot = gameState.history.pop();
+  gameState.grid = snapshot.grid;
+  gameState.score = snapshot.score;
+  renderGrid(gameState.grid);
+  renderScore(gameState.score);
+  renderUndoBtn();
+  document.getElementById('win-overlay').hidden = true;
+}
+
 function initGame() {
   gameState.grid = createEmptyGrid();
   gameState.score = 0;
+  gameState.history = [];
   spawnRandomTile(gameState.grid);
   spawnRandomTile(gameState.grid);
   renderGrid(gameState.grid);
   renderScore(gameState.score);
+  renderUndoBtn();
   document.getElementById('win-overlay').hidden = true;
   document.getElementById('new-game-btn').hidden = true;
 }
@@ -130,17 +151,28 @@ const KEY_MAP = {
 };
 
 document.addEventListener('keydown', (e) => {
+  if (e.ctrlKey && e.key === 'z') {
+    e.preventDefault();
+    undo();
+    return;
+  }
   const direction = KEY_MAP[e.key];
   if (!direction) return;
   e.preventDefault();
+  gameState.history.push({ grid: [...gameState.grid], score: gameState.score });
   const changed = move(gameState.grid, direction);
   if (changed) {
     spawnRandomTile(gameState.grid);
     renderGrid(gameState.grid);
     renderScore(gameState.score);
+    renderUndoBtn();
     if (checkWin(gameState.grid)) showWinOverlay();
+  } else {
+    gameState.history.pop();
   }
 });
+
+document.getElementById('undo-btn').addEventListener('click', undo);
 
 document.getElementById('win-close-btn').addEventListener('click', () => {
   document.getElementById('win-overlay').hidden = true;
