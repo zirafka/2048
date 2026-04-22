@@ -4,6 +4,7 @@ const GRID_SIZE = 16;
 
 let gameState = {
   grid: [],
+  score: 0,
 };
 
 function createEmptyGrid() {
@@ -29,6 +30,10 @@ function fontClass(value) {
   return 'font-xs';
 }
 
+function renderScore(score) {
+  document.getElementById('score').textContent = score;
+}
+
 function renderGrid(grid) {
   const cells = document.querySelectorAll('.cell');
   cells.forEach((cell, i) => {
@@ -45,10 +50,13 @@ function renderGrid(grid) {
 function mergeRow(row) {
   const tiles = row.filter(v => v !== 0);
   const result = [];
+  let score = 0;
   let i = 0;
   while (i < tiles.length) {
     if (i + 1 < tiles.length && tiles[i] === tiles[i + 1]) {
-      result.push(tiles[i] * 2);
+      const merged = tiles[i] * 2;
+      result.push(merged);
+      score += merged;
       i += 2;
     } else {
       result.push(tiles[i]);
@@ -56,7 +64,7 @@ function mergeRow(row) {
     }
   }
   while (result.length < 4) result.push(0);
-  return result;
+  return [result, score];
 }
 
 function getLanes(direction) {
@@ -73,23 +81,29 @@ function move(grid, direction) {
   const before = grid.slice();
   const reversed = direction === 'right' || direction === 'down';
   const lanes = getLanes(direction);
+  let gained = 0;
 
   for (const indices of lanes) {
     let values = indices.map(i => grid[i]);
     if (reversed) values.reverse();
-    let newValues = mergeRow(values);
+    let [newValues, rowScore] = mergeRow(values);
     if (reversed) newValues.reverse();
     indices.forEach((idx, j) => { grid[idx] = newValues[j]; });
+    gained += rowScore;
   }
 
-  return grid.some((v, i) => v !== before[i]);
+  const changed = grid.some((v, i) => v !== before[i]);
+  if (changed) gameState.score += gained;
+  return changed;
 }
 
 function initGame() {
   gameState.grid = createEmptyGrid();
+  gameState.score = 0;
   spawnRandomTile(gameState.grid);
   spawnRandomTile(gameState.grid);
   renderGrid(gameState.grid);
+  renderScore(gameState.score);
 }
 
 const KEY_MAP = {
@@ -109,6 +123,7 @@ document.addEventListener('keydown', (e) => {
   if (changed) {
     spawnRandomTile(gameState.grid);
     renderGrid(gameState.grid);
+    renderScore(gameState.score);
   }
 });
 
