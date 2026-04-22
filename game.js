@@ -1,7 +1,25 @@
 'use strict';
 
-// 1D array of 16 values; index = row * 4 + col; 0 = empty
 const GRID_SIZE = 16;
+
+let gameState = {
+  grid: [],
+};
+
+function createEmptyGrid() {
+  return new Array(GRID_SIZE).fill(0);
+}
+
+function spawnRandomTile(grid) {
+  const empty = [];
+  for (let i = 0; i < GRID_SIZE; i++) {
+    if (grid[i] === 0) empty.push(i);
+  }
+  if (empty.length === 0) return;
+
+  const index = empty[Math.floor(Math.random() * empty.length)];
+  grid[index] = Math.random() < 0.9 ? 2 : 4;
+}
 
 function fontClass(value) {
   const len = String(value).length;
@@ -24,11 +42,11 @@ function renderGrid(grid) {
   });
 }
 
-// debug
-const debugGrid = [
-  2,     4,   0,   0,
-  0,   128,   0,   0,
-  0,     0,   0,2048,
-  0,     0,   0,65536,
-];
-renderGrid(debugGrid);
+function initGame() {
+  gameState.grid = createEmptyGrid();
+  spawnRandomTile(gameState.grid);
+  spawnRandomTile(gameState.grid);
+  renderGrid(gameState.grid);
+}
+
+initGame();
