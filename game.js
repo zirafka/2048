@@ -59,18 +59,30 @@ function mergeRow(row) {
   return result;
 }
 
-function moveLeft(grid) {
-  const before = grid.slice();
-  for (let r = 0; r < 4; r++) {
-    const start = r * 4;
-    const newRow = mergeRow(grid.slice(start, start + 4));
-    for (let c = 0; c < 4; c++) {
-      grid[start + c] = newRow[c];
-    }
+function getLanes(direction) {
+  if (direction === 'left' || direction === 'right') {
+    return [[0,1,2,3], [4,5,6,7], [8,9,10,11], [12,13,14,15]];
   }
-  const changed = grid.some((v, i) => v !== before[i]);
-  console.log('moveLeft', { before, after: grid.slice(), changed });
-  return changed;
+  if (direction === 'up' || direction === 'down') {
+    return [[0,4,8,12], [1,5,9,13], [2,6,10,14], [3,7,11,15]];
+  }
+  throw new Error(`Unknown direction: ${direction}`);
+}
+
+function move(grid, direction) {
+  const before = grid.slice();
+  const reversed = direction === 'right' || direction === 'down';
+  const lanes = getLanes(direction);
+
+  for (const indices of lanes) {
+    let values = indices.map(i => grid[i]);
+    if (reversed) values.reverse();
+    let newValues = mergeRow(values);
+    if (reversed) newValues.reverse();
+    indices.forEach((idx, j) => { grid[idx] = newValues[j]; });
+  }
+
+  return grid.some((v, i) => v !== before[i]);
 }
 
 function initGame() {
@@ -80,10 +92,22 @@ function initGame() {
   renderGrid(gameState.grid);
 }
 
+const KEY_MAP = {
+  ArrowLeft: 'left',  ArrowRight: 'right',
+  ArrowUp:   'up',    ArrowDown:  'down',
+  a: 'left', A: 'left',
+  d: 'right', D: 'right',
+  w: 'up',   W: 'up',
+  s: 'down', S: 'down',
+};
+
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'ArrowLeft') {
-    e.preventDefault();
-    moveLeft(gameState.grid);
+  const direction = KEY_MAP[e.key];
+  if (!direction) return;
+  e.preventDefault();
+  const changed = move(gameState.grid, direction);
+  if (changed) {
+    spawnRandomTile(gameState.grid);
     renderGrid(gameState.grid);
   }
 });
