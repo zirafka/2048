@@ -53,6 +53,7 @@ Neimplementuj nic, co SPEC.md neobsahuje, bez předchozího souhlasu.
 - **Nedělej velké refaktoringy v rámci feature commitu** – refaktoring je vždy samostatný commit.
 - **Nepoužívej knihovny z CDN bez mého souhlasu.**
 - **Nevymýšlej si funkce webových API** – když si nejsi jistý/á, řekni to.
+- Pokud se při implementaci rozhodneš odchýlit od SPEC.md (jiné barvy, jiná technologie, jiná struktura, cokoli), oznam to **explicitně PŘED implementací** v plánu – ne až po v shrnutí. Uveď, v čem se lišíš a proč.
 
 ---
 
