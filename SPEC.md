@@ -86,9 +86,9 @@ Každá hodnota v rámci skupiny má vyšší hustotu šrafování než předcho
 
 ### Barvy ploch
 
-- **Pozadí stránky:** světle šedé
-- **Pozadí hrací plochy (mřížky):** tmavě šedé
-- **Prázdná políčka:** šedé pozadí
+- **Pozadí stránky:** světle béžové (`#f0ede4`)
+- **Pozadí hrací plochy (mřížky):** teplá tmavě šedá (`#6d6560`)
+- **Prázdná políčka:** šedé (`#b5afa8`)
 - **Políčka s číslem:** bílé pozadí + šrafování + text s hodnotou
 
 ### Text na dlaždici
