@@ -152,17 +152,16 @@ const KEY_MAP = {
 };
 
 function handleMove(direction) {
-  gameState.history.push({ grid: [...gameState.grid], score: gameState.score });
-  if (gameState.history.length > HISTORY_LIMIT) gameState.history.shift();
+  const snapshot = { grid: [...gameState.grid], score: gameState.score };
   const changed = move(gameState.grid, direction);
   if (changed) {
+    gameState.history.push(snapshot);
+    if (gameState.history.length > HISTORY_LIMIT) gameState.history.shift();
     spawnRandomTile(gameState.grid);
     renderGrid(gameState.grid);
     renderScore(gameState.score);
     renderUndoBtn();
     if (checkWin(gameState.grid)) showWinOverlay();
-  } else {
-    gameState.history.pop();
   }
 }
 
