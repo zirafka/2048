@@ -258,11 +258,33 @@ async function saveGame() {
   }
 }
 
+let toastCooldown = false;
+
+function showToast() {
+  if (toastCooldown) return;
+  toastCooldown = true;
+  setTimeout(() => { toastCooldown = false; }, 30000);
+  const toast = document.getElementById('toast');
+  toast.hidden = false;
+  toast.classList.remove('toast-fade');
+  setTimeout(() => {
+    toast.classList.add('toast-fade');
+    setTimeout(() => { toast.hidden = true; }, 400);
+  }, 3000);
+}
+
+function flashSaveBtn() {
+  saveBtn.classList.add('save-flash');
+  setTimeout(() => { saveBtn.classList.remove('save-flash'); }, 2000);
+}
+
 async function autoSave() {
   try {
     await saveGame();
+    flashSaveBtn();
   } catch (err) {
     console.error('Auto-save failed:', err);
+    showToast();
   }
 }
 
