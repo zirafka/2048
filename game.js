@@ -1,6 +1,7 @@
 'use strict';
 
 const GRID_SIZE = 16;
+const HISTORY_LIMIT = 100;
 
 let gameState = {
   grid: [],
@@ -152,6 +153,7 @@ const KEY_MAP = {
 
 function handleMove(direction) {
   gameState.history.push({ grid: [...gameState.grid], score: gameState.score });
+  if (gameState.history.length > HISTORY_LIMIT) gameState.history.shift();
   const changed = move(gameState.grid, direction);
   if (changed) {
     spawnRandomTile(gameState.grid);
