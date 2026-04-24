@@ -52,7 +52,8 @@ Dosažení tohoto stavu = výhra.
 
 ## Undo (Zpět)
 
-- **Neomezená historie tahů** – hráč se může vrátit na samý začátek hry.
+- **Historie omezená na posledních 100 tahů** – starší tahy se zapomínají.
+  Důvod: cloudové úložiště má limity přenosu; nekonečná historie je neudržitelná.
 - Tlačítko **Zpět** s počtem dostupných kroků v závorce, např. `Zpět (23)`.
 - Klávesová zkratka **Ctrl+Z**.
 - Undo vrací **kompletní stav** (mřížka, skóre), nikoli jen posun dlaždic.
