@@ -113,6 +113,13 @@ Každá hodnota v rámci skupiny má vyšší hustotu šrafování než předcho
 - Používá se **jeden pevný bin** – při každém uložení se přepíše.
 - Při načtení se obnoví stav včetně undo historie (hráč může i po načtení dělat undo tahy).
 
+### Automatické ukládání
+
+- Každých 50 platných tahů (tahů, které změnily stav mřížky) se automaticky spustí save.
+- Autosave proběhne pouze pokud je aktuální skóre **striktně vyšší** než skóre naposledy uloženého savu. Rovnost nestačí.
+- Při úspěšném autosave tlačítko Uložit na 2 sekundy vizuálně indikuje proběhlý save.
+- Při selhání autosave se zobrazí nenápadný toast vpravo dole po dobu 3 sekund. Pokud selže znovu do 30 sekund, druhý toast se nezobrazí.
+
 ### Bezpečnost – vědomé rozhodnutí
 
 - API klíč JSONBin.io bude umístěn přímo v JavaScriptu.
