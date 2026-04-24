@@ -13,6 +13,12 @@ Posouvej dlaždice šipkami (nebo W/A/S/D, na mobilu swipem). Když se dvě stej
 - Černobílý vizuální styl – dlaždice se liší hustotou šrafování, ne barvou.
 - Cloudové ukládání stavu přes JSONBin.io.
 
+## Known limitations
+
+- Cloud save/load přes JSONBin.io je občas nespolehlivé (výpadky služby, timeouty). Funguje, když JSONBin funguje.
+- Autosave každých 50 tahů je experimentální ze stejného důvodu.
+- Pro spolehlivé ukládání doporučujeme hrát na jednom zařízení. Budoucí verze bude mít vlastní backend.
+
 ## Technologie
 
 Vanilla HTML + CSS + JavaScript, žádné závislosti, žádný build step.
