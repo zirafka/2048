@@ -7,7 +7,10 @@ let gameState = {
   grid: [],
   score: 0,
   history: [],
+  movesSinceLastSave: 0,
 };
+
+let lastSavedScore = 0;
 
 function createEmptyGrid() {
   return new Array(GRID_SIZE).fill(0);
@@ -133,6 +136,7 @@ function initGame() {
   gameState.grid = createEmptyGrid();
   gameState.score = 0;
   gameState.history = [];
+  gameState.movesSinceLastSave = 0;
   spawnRandomTile(gameState.grid);
   spawnRandomTile(gameState.grid);
   renderGrid(gameState.grid);
@@ -140,6 +144,10 @@ function initGame() {
   renderUndoBtn();
   document.getElementById('win-overlay').hidden = true;
   document.getElementById('new-game-btn').hidden = true;
+  fetch(`https://api.jsonbin.io/v3/b/${CONFIG.binId}/latest`, { headers: { 'X-Master-Key': CONFIG.apiKey } })
+    .then(r => r.json())
+    .then(({ record }) => { lastSavedScore = record.score ?? 0; })
+    .catch(() => { console.warn('Could not load lastSavedScore from cloud, assuming 0'); });
 }
 
 const KEY_MAP = {
@@ -162,6 +170,11 @@ function handleMove(direction) {
     renderScore(gameState.score);
     renderUndoBtn();
     if (checkWin(gameState.grid)) showWinOverlay();
+    gameState.movesSinceLastSave++;
+    if (gameState.movesSinceLastSave >= 50) {
+      gameState.movesSinceLastSave = 0;
+      if (gameState.score > lastSavedScore) autoSave();
+    }
   }
 }
 
@@ -238,8 +251,18 @@ async function saveGame() {
       signal: controller.signal,
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    lastSavedScore = gameState.score;
+    gameState.movesSinceLastSave = 0;
   } finally {
     clearTimeout(timeout);
+  }
+}
+
+async function autoSave() {
+  try {
+    await saveGame();
+  } catch (err) {
+    console.error('Auto-save failed:', err);
   }
 }
 
